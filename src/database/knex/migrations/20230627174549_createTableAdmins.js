@@ -9,7 +9,7 @@ exports.up = async knex => {
   table.string("name")
   table.string("email")
   table.string("password")
-  table.string("role")
+  table.boolean("admin", true)
   table.timestamp("create_at").default(knex.fn.now())
    
 })	

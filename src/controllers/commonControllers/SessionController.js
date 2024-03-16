@@ -25,6 +25,11 @@ class SessionController
       throw new AppError("Este usuário não existe", 401)
     }
 
+    if(user.admin == 1)
+    {
+      return res.status(201).json({ user })
+    }
+
     const { secret, expiresIn } = jwtConfig.jwt
 
     const token = sign({}, secret, {

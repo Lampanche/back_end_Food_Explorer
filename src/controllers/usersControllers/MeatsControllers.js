@@ -8,7 +8,7 @@ class MeatsControllers
 
     const user_id = req.user.id
 
-    const { restaurant_id } = req.params
+    const restaurant_id = 1
 
     const { searchs } = req.query
 

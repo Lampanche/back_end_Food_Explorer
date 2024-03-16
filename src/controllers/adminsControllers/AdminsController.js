@@ -8,7 +8,7 @@ class AdminsController
 {
   async create (req, res) 
   {
-    const { name, email, password, role } = req.body
+    const { name, email, password, } = req.body
 
     const emailExists = await knex("admins").where({email}) || await knex("users").where({email})
 
@@ -23,7 +23,7 @@ class AdminsController
       name,
       email,
       password: passwordHashed,
-      role
+      admin: true
     })
 
     return res.status(201).json()

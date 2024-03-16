@@ -7,7 +7,7 @@ class MeatsController
   async create(req, res)
   {
     const { name, description, price, ingredients, category } = req.body
-    const { admin_id, restaurant_id } = req.params
+    const {  admin_id , restaurant_id } = req.params
 
     if(!admin_id)
     {
@@ -80,6 +80,7 @@ class MeatsController
 
   async show(req, res)
   {
+
     const { admin_id, meat_id } = req.params
 
     if(!admin_id)

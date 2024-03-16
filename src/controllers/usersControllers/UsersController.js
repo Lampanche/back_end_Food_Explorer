@@ -11,7 +11,14 @@ class UsersController
   {
     const { name, email, password } = req.body
 
+    if((name == "" || name == null || name == undefined) || (email == "" || email == null || email == undefined) || (password == "" || password == null || password == undefined))
+    {
+      throw new AppError("Todos os campos são obrigatórios.")
+    }
+
     const emailExists = await knex("users").where({email}) || await knex("admins").where({email})
+
+    console.log(emailExists)
 
     if(emailExists.length > 0)
     {
@@ -20,16 +27,16 @@ class UsersController
 
     const passwordHashed = await hash(password, 8)
 
-    const role = "user"
-
     await knex("users").insert({
       name,
       email,
       password: passwordHashed,
-      role
+      admin: false
     })
 
-    return res.status(201).json()
+    return res.status(201).json({
+      message: "Usuário criado com sucesso."
+    })
 
   }
 }

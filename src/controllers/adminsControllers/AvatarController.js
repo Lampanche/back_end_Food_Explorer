@@ -6,8 +6,8 @@ const AppError = require("../../utils/AppError")
 class AvatarControllers
 {
   async update(req, res)
-  {
-    const { admin_id, meat_id } = req.params
+  { 
+    const {  admin_id , meat_id } = req.params
     const  file  = req.file.filename
 
     if(!admin_id)

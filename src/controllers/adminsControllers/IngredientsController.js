@@ -5,7 +5,8 @@ class IngredientsController
 {
   async create(req, res)
   {
-    const { admin_id, meat_id } = req.params
+  
+    const { admin_id , meat_id } = req.params
 
     const { name } = req.body
     
@@ -28,7 +29,8 @@ class IngredientsController
 
   async delete(req, res)
   {
-    const { admin_id ,ingredient_id } = req.params
+
+    const {  admin_id ,ingredient_id } = req.params
 
     if(!admin_id)
     {

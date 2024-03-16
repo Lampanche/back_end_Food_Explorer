@@ -8,7 +8,7 @@ const meatsControllers = new MeatsControllers()
 
 const verifyAuth = require("../../middlewares/verifyAuth")
 
-meatsRouter.get("/meats/:restaurant_id", verifyAuth, meatsControllers.index)
+meatsRouter.get("/meats", verifyAuth, meatsControllers.index)
 meatsRouter.get("/meats/:meat_id", verifyAuth , meatsControllers.show)
 
 

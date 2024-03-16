@@ -4,6 +4,8 @@ const meatsRouter = Router()
 
 const multer = require("multer")
 
+const verifyAuth = require("../../middlewares/verifyAuth.js")
+
 const uploadConfig = require("../../config/upload")
 
 const upload = multer(uploadConfig.MULTER)
@@ -20,7 +22,7 @@ const AvatarController = require("../../controllers/adminsControllers/AvatarCont
 
 const avatarControllers = new AvatarController()
 
-meatsRouter.post("/:admin_id/:restaurant_id", meatsController.create)
+meatsRouter.post("/:admin_id/:restaurant_id",meatsController.create)
 meatsRouter.put("/:admin_id/:meat_id", meatsController.update)
 meatsRouter.get("/:admin_id/:meat_id", meatsController.show)
 meatsRouter.get("/:admin_id", meatsController.index)
