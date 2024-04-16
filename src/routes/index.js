@@ -12,6 +12,8 @@ const adm_meatsRoutes = require("./adminsRoutes/adm.routes.meats")
 
 const user_usersRoutes = require("./usersRoutes/user.routes.users")
 
+const user_FavoriteRoutes = require("./usersRoutes/favorites.routes.users")
+
 const common_meatsViewRoutes = require("./commonRoutes/meatsViewRoutes")
 
 const common_sessionsRoutes = require("./commonRoutes/sessionRoutes")
@@ -24,6 +26,7 @@ routes.use("/avatar", adm_avatarRestaurantRoutes)
 routes.use("/meats", adm_meatsRoutes)
 
 routes.use("/users", user_usersRoutes)
+routes.use("/favorites", user_FavoriteRoutes)
 
 routes.use("/meatsViews", common_meatsViewRoutes)
 routes.use("/session", common_sessionsRoutes)
