@@ -6,7 +6,8 @@ exports.up = async knex => {
   await knex.schema.createTable("meats", table => {
    
   table.increments("id")
-  table.integer("restaurant_id").references("id").inTable("restaurants")
+  table.integer("category_id").references("id").inTable("categorys").onDelete("CASCADE")
+  table.integer("restaurant_id").references("id").inTable("restaurants").onDelete("CASCADE")
   table.string("name")
   table.string("description")
   table.string("price")

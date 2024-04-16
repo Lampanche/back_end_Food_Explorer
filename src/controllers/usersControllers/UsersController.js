@@ -18,8 +18,6 @@ class UsersController
 
     const emailExists = await knex("users").where({email}) || await knex("admins").where({email})
 
-    console.log(emailExists)
-
     if(emailExists.length > 0)
     {
       throw new AppError("Este email já está em uso.")

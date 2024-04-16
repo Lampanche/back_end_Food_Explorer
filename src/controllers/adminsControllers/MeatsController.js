@@ -7,12 +7,7 @@ class MeatsController
   async create(req, res)
   {
     const { name, description, price, ingredients, category } = req.body
-    const {  admin_id , restaurant_id } = req.params
-
-    if(!admin_id)
-    {
-      throw new AppError("Administrador não encontrado.")
-    }
+    const { restaurant_id } = req.params
 
     if(!name || !description || !price || !ingredients || !category)
     {
@@ -23,156 +18,96 @@ class MeatsController
       name,
       description,
       price,
-      restaurant_id
+      restaurant_id,
+      category_id: category
     })
 
     const listIngredients = ingredients.map(ingredient => {
       return {
         name: ingredient,
-        meat_id: meat[0],
-        restaurant_id: restaurant_id
+        meat_id: meat[0]
       }
     })
 
+    const categoryOfMeat = await knex("categorys").where({id:category}).first()
+
     await knex("ingredients").insert(listIngredients)
 
-    await knex("categorys").insert({
-      name: category,
-      meat_id: meat[0],
-      restaurant_id
-    })
 
-
-    return res.status(201).json()
+    return res.status(201).json({message:`A sua ${categoryOfMeat.name} foi cadastrada com sucesso`, meat: meat[0]})
 
   }
 
   async update(req, res)
   {
-    const { name, description, price, category } = req.body
-    const { admin_id, meat_id } = req.params
-
-    if(!admin_id)
-    {
-      throw new AppError("Administrador não encontrado.")
-    }
+    const { name, description, price, category, ingredients, ingredientsExcluded } = req.body
+    const { meat_id } = req.params
 
     const meat = await knex("meats").where({id:meat_id}).first()
 
     meat.name = name ?? meat.name
     meat.description = description ?? meat.description
     meat.price = price ?? meat.price
+    meat.category_id = category ?? meat.category_id
 
     await knex("meats").update({
       name: meat.name,
       description: meat.description,
       price: meat.price,
+      category_id: meat.category_id,
       update_at: knex.fn.now()
     }).where({id:meat_id})
 
-    await knex("categorys").update({
-      name:category
-    }).where({meat_id})
-
-    return res.status(201).json()
-
-  }
-
-  async show(req, res)
-  {
-
-    const { admin_id, meat_id } = req.params
-
-    if(!admin_id)
+    if(ingredients.length > 0)
     {
-      throw new AppError("Administrador não encontrado.")
-    }
+      const ingredientsInMeat = await knex("ingredients").where({meat_id})
 
-    const meat = await knex("meats").where({id:meat_id}).first()
+      const nameIngredientsInMeat = ingredientsInMeat.map( ingredientInMeat => ingredientInMeat.name)
 
-    const ingredients = await knex("ingredients").where({meat_id})
+      const nameIngredientsExcluded = ingredientsExcluded.map( ingredientExcluded => ingredientExcluded.name )
+      
+      const ingredientsFilteredByName = ingredients.filter( ingredient => {
 
-    const category = await knex("categorys").where({meat_id}).first()
+       return !nameIngredientsInMeat.includes(ingredient) || nameIngredientsExcluded.includes(ingredient)
 
-    return res.json({
-      meat,
-      ingredients,
-      category
-    })
-
-  }
-
-  async index(req, res)
-  {
-    const { admin_id } = req.params
-    const { searchs } = req.query
-
-    if(!admin_id)
-    {
-      throw new AppError("Administrador não encontrado.")
-    }
-
-    const restaurantAdmin = await knex("restaurants").where({admin_id}).first()
-    
-    let searchMeats
-
-    if(searchs)
-    {
-      const listSearch = searchs.split(",").map(search => search.trim())
-
-      searchMeats = await knex("meats")
-      .select([
-        "meats.name",
-        "meats.description",
-        "meats.price",
-        "meats.id"
-      ])
-      .innerJoin("ingredients", "ingredients.meat_id", "meats.id")
-      .where("meats.restaurant_id", restaurantAdmin.id)
-      .whereIn("ingredients.name", listSearch)
-      .orWhere((builder) => {
-        builder.whereLike("meats.name", `%${listSearch}%`)
       })
-      .orderBy("meats.name")
-      .groupBy("meats.name")
+      
+      ingredientsFilteredByName.forEach( async ingredientFilteredByName => {
 
-    }
-    else
-    {
-      searchMeats = await knex("meats").where({restaurant_id:restaurantAdmin.id})
-    }
-    
-    const ingredients = await knex("ingredients").where({restaurant_id:restaurantAdmin.id})
-    const categorys = await knex("categorys").where({restaurant_id:restaurantAdmin.id})
+        await knex("ingredients").insert({name:ingredientFilteredByName, meat_id})
 
-    const meats = searchMeats.map(meat => {
-      const ingredientsInMeat = ingredients.filter(ingrediente => ingrediente.meat_id == meat.id)
-      const categorysInMeat = categorys.filter(category => category.meat_id == meat.id)
+      })
 
-      return {
-        meat: meat,
-        ingredients: ingredientsInMeat,
-        category: categorysInMeat
+      if(ingredientsExcluded.length > 0)
+      {
+        ingredientsExcluded.forEach( async ingredientExcluded => {
+
+          await knex("ingredients").delete().where({id:ingredientExcluded.id})
+
+        })
       }
+      
+    }
 
-    })
+    const meatAtt = await knex("meats").where({id:meat_id}).first()
+    
+    const categoryInMeat = await knex("categorys").where({id:meatAtt.category_id}).first()
 
-    return res.json(meats)
+    return res.status(200).json({message:`A sua ${categoryInMeat.name} foi atualizada com sucesso`})
 
   }
 
   async delete(req, res)
   {
-    const { admin_id, meat_id } = req.params
+    const { meat_id } = req.params
 
-    if(!admin_id)
-    {
-      throw new AppError("Administrador não encontrado.")
-    }
+    const meat = await knex("meats").where({id:meat_id}).first()
 
     await knex("meats").delete().where({id:meat_id})
 
-    return res.json()
+    const meatInCategory = await knex("categorys").where({id:meat.category_id}).first()
+
+    return res.status(200).json({message:`A sua ${meatInCategory.name} foi deletada com sucesso.`})
 
   }
 

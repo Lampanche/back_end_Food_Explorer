@@ -1,42 +1,64 @@
 const knex = require("../../database/knex")
 
 const DiskStorage = require("../../providers/DiskStorage")
-const AppError = require("../../utils/AppError")
 
 class AvatarControllers
 {
-  async update(req, res)
+  async create(req, res)
   { 
-    const {  admin_id , meat_id } = req.params
-    const  file  = req.file.filename
+    const { meat_id } = req.params
 
-    if(!admin_id)
+    if(!req.file)
     {
-      throw new AppError("Administrador não encontrado.")
+      return res.status(200).json({message:"O avatar não foi cadastrado"})
     }
+    
+    const file = req.file.filename
 
     const diskStorage = new DiskStorage()
 
-    const meat = await knex("meats").where({id:meat_id}).first()
-
-    if(meat.avatar !== null)
-    {
-      await diskStorage.deleteFile(meat.avatar)
-    }
-
     const fileName = await diskStorage.saveFile(file)
-
-    meat.avatar = fileName
 
     await knex
     .select("avatar")
     .from("meats")
     .where({id:meat_id})
-    .update(meat)
+    .update("avatar", fileName)
 
-    return res.json(meat)
+    return res.status(200).json({message:"O avatar foi cadastrado com sucesso"})
 
   }
+
+  async update(req, res)
+  {
+    const { meat_id } = req.params
+
+    if(!req.file)
+    {
+      return res.status(200).json({message:"O avatar não foi atualizado"})
+    }
+
+    const file = req.file.filename
+
+    const meat = await knex("meats").where({id:meat_id}).first()
+
+    const diskStorage = new DiskStorage()
+
+    if(meat.avatar != null)
+    { 
+      await diskStorage.deleteFile(meat.avatar)
+    }
+
+    const fileName = await diskStorage.saveFile(file)
+
+    await knex("meats")
+    .update("avatar", fileName)
+    .where({id:meat_id})
+
+    return res.status(200).json({message:"O avatar foi atualizado com sucesso."})
+
+  }
+
 }
 
 
