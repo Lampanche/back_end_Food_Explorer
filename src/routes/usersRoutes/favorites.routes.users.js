@@ -9,7 +9,8 @@ const FavoritesController = require("../../controllers/usersControllers/Favorite
 const favoritesController = new FavoritesController()
 
 favoritesRouter.post("/:meat_id", verifyAuth, favoritesController.create)
-favoritesRouter.get("/:restaurant_id/:meat_id", verifyAuth, favoritesController.show)
+favoritesRouter.get("/:restaurant_id", verifyAuth, favoritesController.show)
+favoritesRouter.get("/index/:meat_id", verifyAuth, favoritesController.index)
 favoritesRouter.delete("/:favorite_id", verifyAuth, favoritesController.delete)
 
 

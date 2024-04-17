@@ -9,9 +9,9 @@ class FavoritesController
 
     const user_id = req.user.id
 
-    await knex("favorites").where({user_id}).insert({user_id, meat_id})
+    const [ favorite ] = await knex("favorites").where({user_id}).insert({user_id, meat_id})
 
-    return res.status(201)
+    return res.status(201).json({idFavoriteCreated:favorite})
 
   }
 
@@ -30,12 +30,25 @@ class FavoritesController
 
       const meatsFavorited = meats.filter( meat  => favorite.meat_id == meat.id)
 
-      return meatsFavorited[0]
+      return {
+        id: favorite.id,
+        favorite: meatsFavorited[0]
+      }
       
 
     })
 
-    return res.status(200).json({favorites:userFavoritesMeats})
+    return res.status(200).json(userFavoritesMeats)
+
+  }
+
+  async index(req, res)
+  {
+    const { meat_id } = req.params
+
+    const meatFavorited = await knex("favorites").where("meat_id", meat_id)
+
+    return res.status(200).json(meatFavorited)
 
   }
 

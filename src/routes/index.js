@@ -26,7 +26,7 @@ routes.use("/avatar", adm_avatarRestaurantRoutes)
 routes.use("/meats", adm_meatsRoutes)
 
 routes.use("/users", user_usersRoutes)
-routes.use("/favorites", user_FavoriteRoutes)
+routes.use("/favorite", user_FavoriteRoutes)
 
 routes.use("/meatsViews", common_meatsViewRoutes)
 routes.use("/session", common_sessionsRoutes)
