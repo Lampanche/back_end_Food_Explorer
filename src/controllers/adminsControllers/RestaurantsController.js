@@ -11,18 +11,16 @@ class RestaurantsController
     
     const admin_id = req.user.id
 
-    const { name, account, agency, categorys } = req.body
+    const { name, categorys } = req.body
 
-    if((name == null || name == "" || name == undefined) || (account == null || account == "" || account == undefined) || (account == null || account == "" || account == undefined) || (categorys == null || categorys == "" || categorys == undefined))
+    if((name == null || name == "" || name == undefined)  || (categorys == null || categorys == "" || categorys == undefined))
     {
-      throw new AppError("Os campos de nome, conta, categorias e agencia são obrigatórios")
+      throw new AppError("Os campos de nome e categoria são obrigatórios")
     }
 
     const newRestaurant = await knex("restaurants").insert({
       name,
       admin_id,
-      account,
-      agency,
     })
 
     categorys.forEach( async category => {
@@ -40,7 +38,7 @@ class RestaurantsController
 
   async update(req, res)
   {
-    const { name, account, agency, categorys, categorysExcluded } = req.body
+    const { name, categorys, categorysExcluded } = req.body
 
     const { restaurant_id } = req.params
 
@@ -49,10 +47,6 @@ class RestaurantsController
     const categorysInRestaurant = await knex("categorys").where({restaurant_id:restaurant_id})
 
     restaurant.name = name ?? restaurant.name
-
-    restaurant.account = account ?? restaurant.account
-
-    restaurant.agency = agency ?? restaurant.agency
 
     if(categorys.length > 0)
     {
@@ -67,7 +61,6 @@ class RestaurantsController
       {
         categorysFilteredByName.forEach( async (category) => {
           
-          console.log(category, "categoria para se cadastrada")
           await knex("categorys").insert({name:category, restaurant_id})
   
         })
@@ -86,8 +79,7 @@ class RestaurantsController
 
     await knex("restaurants").where({id:restaurant_id}).first().update({
       name: restaurant.name,
-      account: restaurant.account,
-      agency: restaurant.agency
+      update_at: knex.fn.now()
     })
 
     return res.status(200).json({message:"Restaurante atualizado com sucesso"})
@@ -115,8 +107,6 @@ class RestaurantsController
 
   async show(req, res)
   {
-    const admin_id  = req.user.id
-
     const { searchs } = req.query
 
     let restaurant
@@ -128,7 +118,6 @@ class RestaurantsController
   
       restaurant = await knex.select(["restaurants.*" ,"categorys.name as nameCategory"]).from("restaurants")
       .innerJoin("categorys", "categorys.restaurant_id" ,"restaurants.id")
-      .where("restaurants.admin_id", admin_id)
       .whereIn("categorys.name", listSearchs)     
       .orWhere(build => {
 
@@ -151,7 +140,7 @@ class RestaurantsController
     }
     else
     {
-      restaurant = await knex("restaurants").where({admin_id})
+      restaurant = await knex("restaurants")
     }
 
     const categorys = await knex("categorys")

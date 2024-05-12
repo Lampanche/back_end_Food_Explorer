@@ -8,7 +8,6 @@ async function verifyAuth(req, res, next)
 
   if(!auth)
   { 
-    //res.status(401).json({invalidToken:true})
     throw new AppError("O token do usuário não existe ou expirou.", 401)
   }
 
@@ -27,7 +26,6 @@ async function verifyAuth(req, res, next)
   } 
   catch 
   {
-    //res.status(401).json({invalidToken:true})
     throw new AppError("Token inválido.", 401)
     
   }

@@ -1,5 +1,7 @@
 require("express-async-errors")
 
+const { Server } = require("socket.io")
+
 const express = require("express")
 
 const dbConection = require("./database/sqlite")
@@ -16,7 +18,7 @@ const app = express()
 
 dbConection()
 
-app.use(cors())
+app.use(cors({origin:"http://localhost:5173"}))
 
 app.use(express.json())
 
@@ -43,4 +45,30 @@ app.use((error, request, response, next)=>{
 
 const port = 5000
 
-app.listen(port, () => console.log(`Server is runing in port:${port}`))
+const server = app.listen(port, () => console.log(`Server is runing in port:${port}`))
+
+const wss = new Server(server, {cors:{origin: "http://localhost:5173"}})
+
+app.use("/notifications", (req, res, next) => {
+
+  const payment = req.body
+
+  if(payment.error)
+  {
+    
+    wss.emit("attPayment", payment.error)
+
+    return res.status(200).json()
+
+  }
+  
+  wss.emit("attPayment", payment)
+
+  return res.status(200).json()
+
+})
+
+
+
+
+

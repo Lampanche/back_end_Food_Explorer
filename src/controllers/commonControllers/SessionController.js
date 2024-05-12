@@ -13,8 +13,6 @@ class SessionController
 
     const user = await knex("users").where({email}).first() || await knex("admins").where({email}).first()
 
-    console.log(user)
-
     if(!user)
     {
       throw new AppError("Este usuário não existe.", 401)

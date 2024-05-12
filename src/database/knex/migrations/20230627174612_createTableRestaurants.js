@@ -8,10 +8,9 @@ exports.up = async knex => {
   table.increments("id")
   table.integer("admin_id").references("id").inTable("admins")
   table.string("name")
-  table.string("account")
-  table.string("agency")
   table.string("avatar", null)
   table.timestamp("create_at").default(knex.fn.now())
+  table.timestamp("update_at").default(knex.fn.now())
 
 })	
   
