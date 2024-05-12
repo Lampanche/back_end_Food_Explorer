@@ -1,6 +1,6 @@
 const {  MercadoPagoConfig, Payment } = require("mercadopago")
 
-const client = new MercadoPagoConfig({ accessToken: 'TEST-2691511212762955-042214-6df6be74b5bb4c97a30abc310ff9d72f-1053428876' });
+const client = new MercadoPagoConfig({ accessToken: process.env.ACCESS_TOKEN_MP });
 const payments = new Payment(client);
 
 class MercadoPago
@@ -35,6 +35,10 @@ class MercadoPago
         payment_method_id: methodPayment,
         transaction_amount: amount
       }
+
+      const requestOptions = { idempotencyKey: randomStr }
+
+      return await payments.create({body, requestOptions}).catch(error => error)
 
     }
 

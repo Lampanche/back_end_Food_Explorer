@@ -1,5 +1,7 @@
 require("express-async-errors")
 
+require("dotenv/config")
+
 const { Server } = require("socket.io")
 
 const express = require("express")
