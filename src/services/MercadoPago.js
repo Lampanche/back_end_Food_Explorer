@@ -32,7 +32,7 @@ class MercadoPago
         payer: {
           email: email,
         },
-        payment_method_id: methodPayment,
+        payment_method_id: methodPayment.id,
         transaction_amount: amount
       }
 
