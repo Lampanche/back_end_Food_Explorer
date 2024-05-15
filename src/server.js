@@ -51,6 +51,12 @@ const server = app.listen(port, () => console.log(`Server is runing in port:${po
 
 const wss = new Server(server, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
 
+wss.on("connection", (socket) => {
+
+  console.log(socket.client, "CLIENTE!!!")
+
+})
+
 app.use("/notifications", (req, res, next) => {
 
   const payment = req.body
