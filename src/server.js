@@ -61,6 +61,8 @@ app.use("/notifications", (req, res, next) => {
 
   const payment = req.body
 
+  console.log("ENTREI NO MID DE ENVIAR PARA O CLIENTE")
+
   if(payment.error)
   {
     
