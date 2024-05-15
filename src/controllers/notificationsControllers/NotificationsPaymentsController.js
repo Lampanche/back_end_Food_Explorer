@@ -8,6 +8,8 @@ class NotificationsPaymentsController
   { 
     const { data } = req.body
 
+    console.log("RECEBI A NOTIFICAÇÃO")
+
     req.body = data
 
     return next()

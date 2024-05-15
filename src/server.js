@@ -20,7 +20,7 @@ const app = express()
 
 dbConection()
 
-app.use(cors({origin:"https://food-explorer-lampa.netlify.app"}))
+app.use(cors({origin:["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}))
 
 app.use(express.json())
 
@@ -49,7 +49,7 @@ const port = 5000
 
 const server = app.listen(port, () => console.log(`Server is runing in port:${port}`))
 
-const wss = new Server(server, {cors:{origin: "https://food-explorer-lampa.netlify.app"}})
+const wss = new Server(server, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
 
 app.use("/notifications", (req, res, next) => {
 
