@@ -56,11 +56,10 @@ app.listen(port, () => console.log(`Server is runing in port:${port}`))
 const pubClient = createClient({ url: "redis://localhost:6379" });
 const subClient = pubClient.duplicate();
 
-await Promise.all([
+async () => await Promise.all([
   pubClient.connect(),
   subClient.connect()
 ]);
-
 
 const wss = new Server( {adapter: createAdapter(pubClient, subClient)},{cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
 
