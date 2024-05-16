@@ -1,20 +1,24 @@
-require("express-async-errors")
+require("express-async-errors");
 
-require("dotenv/config")
+require("dotenv/config");
 
-const { Server } = require("socket.io")
+const { Server } = require("socket.io");
 
-const express = require("express")
+const { createAdapter } = require("socket.io/cluster-adapter");
 
-const dbConection = require("./database/sqlite")
+const { setupWorker } = require("socket.io/sticky");
 
-const routes = require("./routes")
+const express = require("express");
 
-const AppError = require("./utils/AppError")
+const dbConection = require("./database/sqlite");
 
-const configUploads = require("./config/upload")
+const routes = require("./routes");
 
-const cors = require("cors")
+const AppError = require("./utils/AppError");
+
+const configUploads = require("./config/upload");
+
+const cors = require("cors");
 
 const app = express()
 
@@ -51,17 +55,13 @@ const server = app.listen(port, () => console.log(`Server is runing in port:${po
 
 const wss = new Server(server, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
 
-wss.on("connection", (socket) => {
+wss.adapter(createAdapter())
 
-  console.log(socket.client, "CLIENTE!!!")
-
-})
+setupWorker(wss)
 
 app.use("/notifications", (req, res, next) => {
 
   const payment = req.body
-
-  console.log("ENTREI NO MID DE ENVIAR PARA O CLIENTE")
 
   if(payment.error)
   {
