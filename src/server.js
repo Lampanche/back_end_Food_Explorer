@@ -4,6 +4,8 @@ require("dotenv/config");
 
 const { Server } = require("socket.io");
 
+const { createServer } = require("http");
+
 const { createAdapter } = require("@socket.io/cluster-adapter");
 
 const { setupWorker } = require("@socket.io/sticky");
@@ -51,9 +53,11 @@ app.use((error, request, response, next)=>{
 
 const port = 5000
 
-const server = app.listen(port, () => console.log(`Server is runing in port:${port}`))
+app.listen(port, () => console.log(`Server is runing in port:${port}`))
 
-const wss = new Server(server, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
+const httpServerWs = createServer() 
+
+const wss = new Server(httpServerWs, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
 
 wss.adapter(createAdapter())
 
