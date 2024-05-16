@@ -4,11 +4,9 @@ require("dotenv/config");
 
 const { Server } = require("socket.io");
 
-const cluster = require('node:cluster');
+const { createAdapter } = require("@socket.io/cluster-adapter");
 
-const process = require("node:process");
-
-const numCPUs = require('os').cpus().length;
+const { setupWorker } = require("@socket.io/sticky");
 
 const express = require("express");
 
@@ -53,30 +51,17 @@ app.use((error, request, response, next)=>{
 
 const port = 5000
 
-let wss
+const server = app.listen(port, () => console.log(`Server is runing in port:${port}`))
 
-if (cluster.isPrimary) {
-  console.log(`Primary ${process.pid} is running`);
+const wss = new Server(server, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
 
-  // Fork workers.
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+wss.adapter(createAdapter())
 
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`);
-  });
-} else {
-  // Workers can share any TCP connection
-  // In this case it is an HTTP server
-  
-  const server = app.listen(port, () => console.log(`Server is runing in port:${port}`))
-  
-  wss = new Server(server, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
+setupWorker(wss)
 
-  console.log(`Worker ${process.pid} started`);
-}
-
+wss.on("connection", (socket) => {
+  console.log(`connect ${socket.id}`);
+});
 
 app.use("/notifications", (req, res, next) => {
 

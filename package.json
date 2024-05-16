@@ -10,6 +10,9 @@
   "author": "Felipe Lampanche",
   "license": "ISC",
   "dependencies": {
+    "@socket.io/cluster-adapter": "^0.2.2",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "@socket.io/sticky": "^1.0.4",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
