@@ -20,17 +20,19 @@ const configUploads = require("./config/upload");
 
 const cors = require("cors");
 
-const app = express()
 
-dbConection()
 
-app.use(cors({origin:["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}))
+const app = express();
 
-app.use(express.json())
+dbConection();
 
-app.use(routes)
+app.use(cors({origin:["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}));
 
-app.use("/file", express.static(configUploads.UPLOADS_FOLDER))
+app.use(express.json());
+
+app.use(routes);
+
+app.use("/file", express.static(configUploads.UPLOADS_FOLDER));
 
 app.use((error, request, response, next)=>{
 
@@ -47,11 +49,11 @@ app.use((error, request, response, next)=>{
     console.log(error)
   }
     
-})
+});
 
-const port = 5000
+const port = 5000;
 
-app.listen(port, () => console.log(`Server is runing in port:${port}`))
+app.listen(port, () => console.log(`Server is runing in port:${port}`));
 
 const pubClient = createClient({ url: "redis://localhost:6379" });
 const subClient = pubClient.duplicate();
@@ -61,9 +63,9 @@ async () => await Promise.all([
   subClient.connect()
 ]);
 
-const wss = new Server( {adapter: createAdapter(pubClient, subClient)},{cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
+const wss = new Server( {adapter: createAdapter(pubClient, subClient), cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"] } } );
 
-wss.listen(3000)
+wss.listen(3000);
 
 wss.on("connection", (socket) => {
   console.log(`connect ${socket.id}`);
@@ -86,7 +88,7 @@ app.use("/notifications", (req, res, next) => {
 
   return res.status(200).json()
 
-})
+});
 
 
 
