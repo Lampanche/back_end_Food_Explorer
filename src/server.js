@@ -4,11 +4,9 @@ require("dotenv/config");
 
 const { Server } = require("socket.io");
 
-const { createServer } = require("http");
+const { createAdapter } = require("@socket.io/redis-adapter");
 
-const { createAdapter } = require("@socket.io/cluster-adapter");
-
-const { setupWorker } = require("@socket.io/sticky");
+const { createClient } = require("redis");
 
 const express = require("express");
 
@@ -55,13 +53,18 @@ const port = 5000
 
 app.listen(port, () => console.log(`Server is runing in port:${port}`))
 
-const httpServerWs = createServer() 
+const pubClient = createClient({ url: "redis://localhost:6379" });
+const subClient = pubClient.duplicate();
 
-const wss = new Server(httpServerWs, {cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
+await Promise.all([
+  pubClient.connect(),
+  subClient.connect()
+]);
 
-wss.adapter(createAdapter())
 
-setupWorker(wss)
+const wss = new Server( {adapter: createAdapter(pubClient, subClient)},{cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}})
+
+wss.listen(3000)
 
 wss.on("connection", (socket) => {
   console.log(`connect ${socket.id}`);
