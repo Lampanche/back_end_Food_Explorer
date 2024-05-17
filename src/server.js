@@ -21,12 +21,11 @@ const configUploads = require("./config/upload");
 const cors = require("cors");
 
 
-
 const app = express();
 
 dbConection();
 
-app.use(cors({origin:["https://food-explorer-lampa.netlify.app", "http://localhost:5173"]}));
+app.use(cors({origin:"https://food-explorer-lampa.netlify.app"}));
 
 app.use(express.json());
 
@@ -55,6 +54,8 @@ const port = 5000;
 
 app.listen(port, () => console.log(`Server is runing in port:${port}`));
 
+/*
+
 const pubClient = createClient({ url: "redis://localhost:6379" });
 const subClient = pubClient.duplicate();
 
@@ -66,6 +67,8 @@ async () => await Promise.all([
 const wss = new Server( {adapter: createAdapter(pubClient, subClient), cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"] } } );
 
 wss.listen(3000);
+
+
 
 wss.on("connection", (socket) => {
   console.log(`connect ${socket.id}`);
@@ -90,7 +93,7 @@ app.use("/notifications", (req, res, next) => {
 
 });
 
-
+*/
 
 
 
