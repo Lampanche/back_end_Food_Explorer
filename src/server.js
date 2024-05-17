@@ -52,9 +52,7 @@ app.use((error, request, response, next)=>{
 
 const port = 5000;
 
-app.listen(port, () => console.log(`Server is runing in port:${port}`));
-
-/*
+const server = app.listen(port, () => console.log(`Server is runing in port:${port}`));
 
 const pubClient = createClient({ url: "redis://localhost:6379" });
 const subClient = pubClient.duplicate();
@@ -64,10 +62,7 @@ async () => await Promise.all([
   subClient.connect()
 ]);
 
-const wss = new Server( {adapter: createAdapter(pubClient, subClient), cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"] } } );
-
-wss.listen(3000);
-
+const wss = new Server( server, {adapter: createAdapter(pubClient, subClient), cors:{origin: ["https://food-explorer-lampa.netlify.app", "http://localhost:5173"] } } );
 
 
 wss.on("connection", (socket) => {
@@ -93,7 +88,6 @@ app.use("/notifications", (req, res, next) => {
 
 });
 
-*/
 
 
 
