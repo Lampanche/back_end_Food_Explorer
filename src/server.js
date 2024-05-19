@@ -61,6 +61,8 @@ app.use("/notifications", (req, res, next) => {
 
   const payment = req.body
 
+  console.log("ENTREI PARA ENVIAR A NOTIFICAÇÃO!")
+
   if(payment.error)
   {
     
