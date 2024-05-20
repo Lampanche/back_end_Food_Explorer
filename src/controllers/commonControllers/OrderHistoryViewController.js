@@ -1,5 +1,6 @@
 const knex = require("../../database/knex")
 
+const moment = require("moment")
 
 class OrderHistoryViewController
 {
@@ -19,22 +20,16 @@ class OrderHistoryViewController
 
     const ordersIncludesItemsAndPaymentsPromisses = orders.map( async order  => {
 
-      const orderDateCreate = new Date(order.create_at)
+      const orderDateCreate = moment(order.create_at).utcOffset(-3).format("DD/MM à HH:mm")
 
-      const orderDateUpdated = new Date(order.update_at)
+      const orderDateCreateFormat = orderDateCreate.replace("à", "ás")
 
-      let orderDateCreateFormat = orderDateCreate.getDate().toString().padStart(2, "0") + "/"
-      orderDateCreateFormat += (orderDateCreate.getMonth() + 1).toString().padStart(2, "0") + " às "
-      orderDateCreateFormat += orderDateCreate.getHours().toString().padStart(2, "0") + "h"
-      orderDateCreateFormat += orderDateCreate.getMinutes().toString().padStart(2, "0")
+      const orderDateUpdated = moment(order.update_at).utcOffset(-3).format("DD/MM à HH:mm")
 
-      let orderDateUpdateFormat = orderDateUpdated.getDate().toString().padStart(2, "0") + "/"
-      orderDateUpdateFormat += (orderDateUpdated.getMonth() + 1).toString().padStart(2, "0") + " às "
-      orderDateUpdateFormat += orderDateUpdated.getHours().toString().padStart(2, "0") + "h"
-      orderDateUpdateFormat += orderDateUpdated.getMinutes().toString().padStart(2, "0")
+      const orderDateUpdatedFormat = orderDateUpdated.replace("à", "ás")
 
       order.create_at = orderDateCreateFormat
-      order.update_at = orderDateUpdateFormat
+      order.update_at = orderDateUpdatedFormat
 
       const paymentsFiltered = payments.filter( payment => payment.order_id == order.id )
 
@@ -44,23 +39,17 @@ class OrderHistoryViewController
 
       const paymentsFilteredDateFormat = paymentsFiltered.map( paymentFiltered => {
 
-        const dateCreate = new Date(paymentFiltered.create_at)
+        const dateCreate = moment(paymentFiltered.create_at).utcOffset(-3).format("DD/MM à HH:mm")
 
-        const dateUp = new Date(paymentFiltered.update_at)
+        const dateCreateFormat = dateCreate.replace("à", "ás")
 
-        let dateCreateFormat = dateCreate.getDate().toString().padStart(2, "0") + "/"
-        dateCreateFormat += (dateCreate.getMonth() + 1).toString().padStart(2, "0") + " às "
-        dateCreateFormat += dateCreate.getHours().toString().padStart(2, "0") + "h"
-        dateCreateFormat += dateCreate.getMinutes().toString().padStart(2, "0")
+        const dateUp = moment(paymentFiltered.update_at).utcOffset(-3).format("DD/MM à HH:mm")
 
-        let dateUpdateFormat = dateUp.getDate().toString().padStart(2, "0") + "/"
-        dateUpdateFormat += (dateUp.getMonth() + 1).toString().padStart(2, "0") + " às "
-        dateUpdateFormat += dateUp.getHours().toString().padStart(2, "0") + "h"
-        dateUpdateFormat += dateUp.getMinutes().toString().padStart(2, "0")
+        const dateUpFormat = dateUp.replace("à", "ás")
 
         paymentFiltered.create_at = dateCreateFormat
 
-        paymentFiltered.update_at = dateUpdateFormat
+        paymentFiltered.update_at = dateUpFormat
 
         if(paymentFiltered.situation == "approved")
         {

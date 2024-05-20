@@ -2,6 +2,8 @@ const knex = require("../../database/knex")
 
 const AppError = require("../../utils/AppError")
 
+const moment = require("moment")
+
 class OrdersController
 {
   async update(req, res)
@@ -16,20 +18,12 @@ class OrdersController
       throw new AppError("Sem pedido para atualizar", 400)
     }
 
-    const dateOrderUpdated = new Date(date)
-
-    let dateOrderUpdatedTzISO = dateOrderUpdated.getFullYear().toString() + "-"
-    dateOrderUpdatedTzISO += (dateOrderUpdated.getMonth() + 1).toString().padStart(2, "0") + "-"
-    dateOrderUpdatedTzISO += dateOrderUpdated.getDate().toString().padStart(2, "0") + "T"
-    dateOrderUpdatedTzISO += dateOrderUpdated.getHours().toString().padStart(2, "0") + ":"
-    dateOrderUpdatedTzISO += dateOrderUpdated.getMinutes().toString().padStart(2, "0") + ":"
-    dateOrderUpdatedTzISO += dateOrderUpdated.getSeconds().toString().padStart(2, "0") + "."
-    dateOrderUpdatedTzISO += dateOrderUpdated.getMilliseconds().toString().padStart(3, "0")
+    const dateOrderUpdated = moment.utc(date).toISOString()
 
     await knex("orders").where({id:order_id}).update({
 
       situation: status,
-      update_at: dateOrderUpdatedTzISO
+      update_at: dateOrderUpdated
 
     })
 

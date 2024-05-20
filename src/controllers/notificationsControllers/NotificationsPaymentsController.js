@@ -2,13 +2,13 @@ const knex = require("../../database/knex")
 
 const MercadoPago = require("../../services/MercadoPago")
 
+const moment = require("moment")
+
 class NotificationsPaymentsController
 {
   async create(req, res, next)
   { 
     const { data } = req.body
-
-    console.log("RECEBI A NOTIFICAÇÃO")
 
     req.body = data
 
@@ -29,19 +29,11 @@ class NotificationsPaymentsController
     {
       const { date_last_updated, status, status_detail, payment_method_id } = paymentAtt
 
-      const dateUpdateMp = new Date(date_last_updated)
-
-      let dateInNowTzISO = dateUpdateMp.getFullYear().toString() + "-"
-      dateInNowTzISO += (dateUpdateMp.getMonth() + 1).toString().padStart(2, "0") + "-"
-      dateInNowTzISO += dateUpdateMp.getDate().toString().padStart(2, "0") + "T"
-      dateInNowTzISO += dateUpdateMp.getHours().toString().padStart(2, "0") + ":"
-      dateInNowTzISO += dateUpdateMp.getMinutes().toString().padStart(2, "0") + ":"
-      dateInNowTzISO += dateUpdateMp.getSeconds().toString().padStart(2, "0") + "."
-      dateInNowTzISO += dateUpdateMp.getMilliseconds().toString().padStart(3, "0")
+      const dateMpInUTC = moment.utc(date_last_updated).toISOString()
 
       await knex("payments").where({id:data.id}).update({
         situation: status,
-        update_at: dateInNowTzISO
+        update_at: dateMpInUTC
       })
 
       const payment = await knex("payments").where({id_mp:paymentAtt.id}).first()
