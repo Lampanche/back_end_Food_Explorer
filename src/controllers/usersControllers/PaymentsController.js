@@ -25,24 +25,15 @@ class PaymentsController
 
     const payment = await mercadoPago.createPayment(name, email, amount, methodPayment)
 
+    console.log(payment, "RETORNO MP")
+
     if(payment.error || payment.status == '500')
     {
       throw new AppError(`${payment.message}`, Number(payment.status))
     }
 
-    //const dateCreatedMp = new Date(payment.date_created)
-
     const dateMpInUTC = moment.utc(payment.date_created).toISOString()
 
-    /*
-    let dateInNowTzISO = dateCreatedMp.getFullYear().toString() + "-"
-    dateInNowTzISO += (dateCreatedMp.getMonth() + 1).toString().padStart(2, "0") + "-"
-    dateInNowTzISO += dateCreatedMp.getDate().toString().padStart(2, "0") + "T"
-    dateInNowTzISO += dateCreatedMp.getHours().toString().padStart(2, "0") + ":"
-    dateInNowTzISO += dateCreatedMp.getMinutes().toString().padStart(2, "0") + ":"
-    dateInNowTzISO += dateCreatedMp.getSeconds().toString().padStart(2, "0") + "."
-    dateInNowTzISO += dateCreatedMp.getMilliseconds().toString().padStart(3, "0")
-    */
     const newOrder = await knex("orders").insert({
       user_id,
       situation: "Pendente",

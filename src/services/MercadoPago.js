@@ -19,6 +19,8 @@ class MercadoPago
       randomStr += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
 
+    console.log(methodPayment.token)
+
     let body
 
     if(methodPayment.id === "pix")
