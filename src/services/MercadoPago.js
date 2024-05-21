@@ -1,6 +1,6 @@
 const {  MercadoPagoConfig, Payment } = require("mercadopago")
 
-const client = new MercadoPagoConfig({ accessToken: "APP_USR-2691511212762955-042214-e7314b05e31f2bf98f22fa90e070de06-1053428876" });
+const client = new MercadoPagoConfig({ accessToken: process.env.ACCESS_TOKEN_MP });
 const payments = new Payment(client);
 
 class MercadoPago
@@ -18,8 +18,6 @@ class MercadoPago
     for(let i = 0; i < 20; i++) {
       randomStr += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-
-    console.log(methodPayment.token)
 
     let body
 

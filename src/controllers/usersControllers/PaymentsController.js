@@ -25,8 +25,6 @@ class PaymentsController
 
     const payment = await mercadoPago.createPayment(name, email, amount, methodPayment)
 
-    console.log(payment, "RETORNO MP")
-
     if(payment.error || payment.status == '500')
     {
       throw new AppError(`${payment.message}`, Number(payment.status))
