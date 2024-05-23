@@ -8,7 +8,7 @@ const OrderHistoryViewController = require("../../controllers/commonControllers/
 
 const orderHistoryViewController = new OrderHistoryViewController()
 
-orderHistoryViewRouter.get("/:restaurant_id/isAdmin", verifyAuth, orderHistoryViewController.show)
+orderHistoryViewRouter.get("/:restaurant_id/:isAdmin", verifyAuth, orderHistoryViewController.show)
 
 
 module.exports = orderHistoryViewRouter
