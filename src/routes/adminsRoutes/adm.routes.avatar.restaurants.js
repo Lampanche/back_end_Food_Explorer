@@ -15,6 +15,6 @@ const avatarRestaurantController = new AvatarRestaurantController()
 const avatarRestaurantRouter = Router()
 
 avatarRestaurantRouter.post("/create/:restaurant_id", verifyAuth, upload.single("avatar"), avatarRestaurantController.create)
-avatarRestaurantRouter.put("/put/:restaurant_id", verifyAuth, upload.single("avatar"), avatarRestaurantController.update)
+avatarRestaurantRouter.patch("/up/:restaurant_id", verifyAuth, upload.single("avatar"), avatarRestaurantController.update)
 
 module.exports = avatarRestaurantRouter

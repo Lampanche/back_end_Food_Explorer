@@ -8,7 +8,7 @@ const OrdersController = require("../../controllers/adminsControllers/OrdersCont
 
 const ordersController = new OrdersController()
 
-ordersRouter.put("/:order_id", verifyAuth, ordersController.update)
+ordersRouter.patch("/:order_id", verifyAuth, ordersController.update)
 
 
 module.exports = ordersRouter
