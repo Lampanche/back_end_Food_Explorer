@@ -44,9 +44,12 @@ class FavoritesController
 
   async index(req, res)
   {
+
+    const user_id = req.user.id
+
     const { meat_id } = req.params
 
-    const meatFavorited = await knex("favorites").where("meat_id", meat_id)
+    const meatFavorited = await knex("favorites").where({user_id}).andWhere({meat_id})
 
     return res.status(200).json(meatFavorited)
 

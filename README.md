@@ -174,7 +174,7 @@ GET /meatsViews/index/:meat_id
 
 #Visualização dos pedidos
 
-GET /orderHistory/:restaurant_id
+GET /orderHistory/:restaurant_id/:isAdmin
 
 #Criação da sessão
 

@@ -8,9 +8,18 @@ class OrderHistoryViewController
   {
     const user_id = req.user.id
 
-    const { restaurant_id } = req.params
+    const { restaurant_id, isAdmin } = req.params
 
-    const orders = await knex("orders").where({user_id}).andWhere({restaurant_id})
+    let orders
+
+    if(isAdmin)
+    {
+      orders = await knex("orders").where({restaurant_id})
+    }
+    else
+    {
+      orders = await knex("orders").where({user_id}).andWhere({restaurant_id})
+    }
 
     const itemsOrderAll = await knex("itemsOrder")
 
