@@ -12,17 +12,13 @@ class OrderHistoryViewController
 
     let orders
 
-    console.log(typeof isAdmin, isAdmin)
-
-    if(isAdmin == true)
+    if(isAdmin == "true")
     {
       orders = await knex("orders").where({restaurant_id})
-      console.log("ENTREI AQUI, ADMIN")
     }
     else
     {
       orders = await knex("orders").where({user_id}).andWhere({restaurant_id})
-      console.log("ENTREI AQUI, USUÁRIO")
     }
 
     const itemsOrderAll = await knex("itemsOrder")
