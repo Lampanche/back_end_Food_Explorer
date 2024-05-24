@@ -12,7 +12,7 @@ class OrderHistoryViewController
 
     let orders
 
-    if(isAdmin)
+    if(isAdmin == true)
     {
       orders = await knex("orders").where({restaurant_id})
     }
