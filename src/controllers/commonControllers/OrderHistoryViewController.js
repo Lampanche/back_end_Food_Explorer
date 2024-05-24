@@ -12,6 +12,8 @@ class OrderHistoryViewController
 
     let orders
 
+    console.log(typeof isAdmin, isAdmin)
+
     if(isAdmin == true)
     {
       orders = await knex("orders").where({restaurant_id})
